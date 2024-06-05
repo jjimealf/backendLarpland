@@ -9,13 +9,14 @@ class LoginController extends Controller
 {
     public function login(Request $request)
     {
-        $response = ["status" => "0", "message" => ""];
+        $response = ["status" => "0", "rol" => "0", "message" => ""];
         $data = json_decode($request->getContent());
         $user = User::where('email', $data->email)->first();
         if ($user) {
             if (password_verify($data->password, $user->password)) {
                 $response["status"] = "1";
                 $response["message"] = "Login exitoso";
+                $response["rol"] = $user->rol;
             } else {
                 $response["message"] = "Contraseña incorrecta";
             }
