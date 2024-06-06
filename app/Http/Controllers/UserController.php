@@ -29,6 +29,7 @@ class UserController extends Controller
             'name' => 'required|string|max:25',
             'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|min:8',
+            'rol' => 'sometimes|integer',
         ]);
 
         if ($validator->fails()) {
@@ -39,7 +40,7 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'rol' => 0,
+            'rol' => $request->rol ?? 0,
         ]);
 
         return response()->json($user, 201);
@@ -59,7 +60,26 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'sometimes|string|max:25',
+            'email' => 'sometimes|string|email|max:100|unique:users',
+            'password' => 'sometimes|string|min:8',
+            'rol' => 'sometimes|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
+        $user = User::findOrFail($id);
+        $user->update([
+            'name' => $request->name ?? $user->name,
+            'email' => $request->email ?? $user->email,
+            'password' => $request->password ? Hash::make($request->password) : $user->password,
+            'rol' => $request->rol ?? $user->rol,
+        ]);
+
+        return response()->json($user);
     }
 
     /**
