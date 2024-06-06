@@ -27,7 +27,8 @@ class ProductController extends Controller
             'descripcion' => 'required|string',
             'precio' => 'required|numeric',
             'cantidad' => 'required|numeric',
-            'imagen' => 'required|image'
+            'imagen' => 'required|image',
+            'categoria' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -55,7 +56,22 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        
+        $validator = Validator::make($request->all(), [
+            'nombre' => 'sometimes|string',
+            'descripcion' => 'sometimes|string',
+            'precio' => 'sometimes|numeric',
+            'cantidad' => 'sometimes|numeric',
+            'imagen' => 'sometimes|image',
+            'categoria' => 'sometimes|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
+        $product = Product::findOrfail($id);
+        $product->update($request->all());
+        return response()->json($product, 200);
     }
 
     /**
@@ -63,6 +79,8 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $product = Product::findOrfail($id);
+        $product->delete();
+        return response()->json(null, 204);
     }
 }
