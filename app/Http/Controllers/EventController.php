@@ -27,7 +27,7 @@ class EventController extends Controller
             'descripcion' => 'required|string',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date',
-            'imagen' => 'required|image',
+            'image' => 'required|image',
         ]);
 
         if ($validator->fails()) {
@@ -35,8 +35,8 @@ class EventController extends Controller
         }
 
         $event = new Roleplay_event($request->all());
-        $path = $request->imagen->store('public/img');
-        $event->imagen = $path;
+        $path = $request->image->store('public/img');
+        $event->image = $path;
         $event->save();
         return response()->json($event, 200);
     }
@@ -60,7 +60,7 @@ class EventController extends Controller
             'descripcion' => 'sometimes|string',
             'fecha_inicio' => 'sometimes|date',
             'fecha_fin' => 'sometimes|date',
-            'imagen' => 'sometimes|image',
+            'image' => 'sometimes|image',
         ]);
 
         if ($validator->fails()) {

@@ -14,6 +14,6 @@ class Roleplay_event extends Model
         'descripcion',
         'fecha_inicio',
         'fecha_fin',
-        'imagen'
+        'image'
     ];
 }
