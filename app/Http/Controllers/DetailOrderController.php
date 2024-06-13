@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Detail_Order;
 use Illuminate\Http\Request;
-use App\Models\Order;
 
-class OrderController extends Controller
+class DetailOrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $order = Order::all();
+        $order = Detail_Order::all();
         return response()->json($order);
     }
 
@@ -21,7 +21,7 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $order = new Order($request->all());
+        $order = new Detail_Order($request->all());
         $order->save();
         return response()->json($order, 200);
     }
@@ -31,7 +31,7 @@ class OrderController extends Controller
      */
     public function show(string $id)
     {
-        $order = Order::findOrfail($id);
+        $order = Detail_Order::findOrfail($id);
         return response()->json($order);
     }
 

@@ -17,6 +17,7 @@ class LoginController extends Controller
                 $response["status"] = "1";
                 $response["message"] = "Login exitoso";
                 $response["rol"] = $user->rol;
+                $response["userId"] = $user->id;
             } else {
                 $response["message"] = "Contraseña incorrecta";
             }

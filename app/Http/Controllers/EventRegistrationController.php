@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event_registration;
 use Illuminate\Http\Request;
-use App\Models\Order;
 
-class OrderController extends Controller
+class EventRegistrationController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $order = Order::all();
-        return response()->json($order);
+        $events = Event_registration::all();
+        return response()->json($events);
     }
 
     /**
@@ -21,9 +21,9 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $order = new Order($request->all());
-        $order->save();
-        return response()->json($order, 200);
+        $event = new Event_registration($request->all());
+        $event->save();
+        return response()->json($event, 200);
     }
 
     /**
@@ -31,8 +31,8 @@ class OrderController extends Controller
      */
     public function show(string $id)
     {
-        $order = Order::findOrfail($id);
-        return response()->json($order);
+        $event = Event_registration::findOrfail($id);
+        return response()->json($event);
     }
 
     /**

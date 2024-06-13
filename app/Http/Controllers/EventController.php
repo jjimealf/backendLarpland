@@ -27,17 +27,14 @@ class EventController extends Controller
             'descripcion' => 'required|string',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date',
-            'image' => 'required|image',
+            'image' => 'sometimes|image',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
 
-        $event = new Roleplay_event($request->all());
-        $path = $request->image->store('public/img');
-        $event->image = $path;
-        $event->save();
+        $event = Roleplay_event::create($request->all());
         return response()->json($event, 200);
     }
 
