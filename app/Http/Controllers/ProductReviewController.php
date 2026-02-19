@@ -55,7 +55,26 @@ class ProductReviewController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'product_id' => 'sometimes|integer|exists:products,id',
+            'user_id' => 'sometimes|integer|exists:users,id',
+            'comment' => 'sometimes|string',
+            'rating' => 'sometimes|integer|min:1|max:5',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
+        $productReview = Product_Review::findOrFail($id);
+        $productReview->update($request->only([
+            'product_id',
+            'user_id',
+            'comment',
+            'rating',
+        ]));
+
+        return response()->json($productReview, 200);
     }
 
     /**
@@ -63,6 +82,9 @@ class ProductReviewController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $productReview = Product_Review::findOrFail($id);
+        $productReview->delete();
+
+        return response()->json(null, 204);
     }
 }

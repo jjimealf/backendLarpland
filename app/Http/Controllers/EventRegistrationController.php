@@ -53,7 +53,22 @@ class EventRegistrationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'sometimes|integer|exists:users,id',
+            'event_id' => 'sometimes|integer|exists:roleplay_events,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
+        $event = Event_registration::findOrFail($id);
+        $event->update($request->only([
+            'user_id',
+            'event_id',
+        ]));
+
+        return response()->json($event, 200);
     }
 
     /**
@@ -61,6 +76,9 @@ class EventRegistrationController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $event = Event_registration::findOrFail($id);
+        $event->delete();
+
+        return response()->json(null, 204);
     }
 }

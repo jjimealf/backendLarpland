@@ -57,7 +57,26 @@ class DetailOrderController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'order_id' => 'sometimes|integer|exists:orders,id',
+            'product_id' => 'sometimes|integer|exists:products,id',
+            'cantidad' => 'sometimes|integer|min:1',
+            'precio_unitario' => 'sometimes|numeric|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
+        $order = Detail_Order::findOrFail($id);
+        $order->update($request->only([
+            'order_id',
+            'product_id',
+            'cantidad',
+            'precio_unitario',
+        ]));
+
+        return response()->json($order, 200);
     }
 
     /**
@@ -65,6 +84,9 @@ class DetailOrderController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $order = Detail_Order::findOrFail($id);
+        $order->delete();
+
+        return response()->json(null, 204);
     }
 }

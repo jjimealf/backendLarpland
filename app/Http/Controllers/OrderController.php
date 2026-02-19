@@ -57,7 +57,26 @@ class OrderController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'sometimes|integer|exists:users,id',
+            'estado' => 'sometimes|in:pendiente,procesando,completado',
+            'fecha_pedido' => 'sometimes|date',
+            'direccion_envio' => 'sometimes|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
+        $order = Order::findOrFail($id);
+        $order->update($request->only([
+            'user_id',
+            'estado',
+            'fecha_pedido',
+            'direccion_envio',
+        ]));
+
+        return response()->json($order, 200);
     }
 
     /**
@@ -65,6 +84,9 @@ class OrderController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $order = Order::findOrFail($id);
+        $order->delete();
+
+        return response()->json(null, 204);
     }
 }
