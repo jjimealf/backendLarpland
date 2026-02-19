@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event_registration;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class EventRegistrationController extends Controller
 {
@@ -21,7 +22,19 @@ class EventRegistrationController extends Controller
      */
     public function store(Request $request)
     {
-        $event = new Event_registration($request->all());
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|integer|exists:users,id',
+            'event_id' => 'required|integer|exists:roleplay_events,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
+        $event = new Event_registration($request->only([
+            'user_id',
+            'event_id',
+        ]));
         $event->save();
         return response()->json($event, 200);
     }

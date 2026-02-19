@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\Product_Review;
+use Illuminate\Support\Facades\Validator;
 
 class ProductReviewController extends Controller
 {
@@ -22,7 +22,23 @@ class ProductReviewController extends Controller
      */
     public function store(Request $request)
     {
-        $productReviews = Product_Review::create($request->all());
+        $validator = Validator::make($request->all(), [
+            'product_id' => 'required|integer|exists:products,id',
+            'user_id' => 'required|integer|exists:users,id',
+            'comment' => 'sometimes|string',
+            'rating' => 'required|integer|min:1|max:5',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
+        $productReviews = Product_Review::create($request->only([
+            'product_id',
+            'user_id',
+            'comment',
+            'rating',
+        ]));
         return response()->json($productReviews, 200);
     }
     /**

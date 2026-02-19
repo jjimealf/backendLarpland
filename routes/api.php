@@ -17,10 +17,13 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/login', [LoginController::class, 'login']);
-Route::apiResource('users', UserController::class);
-Route::apiResource('products', ProductController::class);
-Route::apiResource('orders', OrderController::class);
-Route::apiResource('events', EventController::class);
-Route::apiResource('detail', DetailOrderController::class);
-Route::apiResource('reviews', ProductReviewController::class);
-Route::apiResource('event/registrations', EventRegistrationController::class);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('users', UserController::class);
+    Route::apiResource('products', ProductController::class);
+    Route::apiResource('orders', OrderController::class);
+    Route::apiResource('events', EventController::class);
+    Route::apiResource('detail', DetailOrderController::class);
+    Route::apiResource('reviews', ProductReviewController::class);
+    Route::apiResource('event/registrations', EventRegistrationController::class);
+});

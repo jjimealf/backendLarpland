@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use App\Models\User;
 
 
@@ -62,7 +63,13 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|string|max:25',
-            'email' => 'sometimes|string|email|max:100|unique:users',
+            'email' => [
+                'sometimes',
+                'string',
+                'email',
+                'max:100',
+                Rule::unique('users')->ignore($id),
+            ],
             'password' => 'sometimes|string|min:8',
             'rol' => 'sometimes|integer',
         ]);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Roleplay_event;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class EventController extends Controller
@@ -27,14 +28,25 @@ class EventController extends Controller
             'descripcion' => 'required|string',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date',
-            'image' => 'sometimes|image',
+            'image' => 'sometimes|image|max:5120',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
 
-        $event = Roleplay_event::create($request->all());
+        $event = new Roleplay_event($request->only([
+            'nombre',
+            'descripcion',
+            'fecha_inicio',
+            'fecha_fin',
+        ]));
+
+        if ($request->hasFile('image')) {
+            $event->image = $request->file('image')->store('public/img');
+        }
+
+        $event->save();
         return response()->json($event, 200);
     }
 
@@ -57,7 +69,7 @@ class EventController extends Controller
             'descripcion' => 'sometimes|string',
             'fecha_inicio' => 'sometimes|date',
             'fecha_fin' => 'sometimes|date',
-            'image' => 'sometimes|image',
+            'image' => 'sometimes|image|max:5120',
         ]);
 
         if ($validator->fails()) {
@@ -65,11 +77,21 @@ class EventController extends Controller
         }
 
         $event = Roleplay_event::findOrfail($id);
-        $event->update($request->all());
-        if ($request->hasFile('imagen')) {
-            $path = $request->imagen->store('public/img');
-            $event->imagen = $path;
+
+        $event->fill($request->only([
+            'nombre',
+            'descripcion',
+            'fecha_inicio',
+            'fecha_fin',
+        ]));
+
+        if ($request->hasFile('image')) {
+            if ($event->image) {
+                Storage::delete($event->image);
+            }
+            $event->image = $request->file('image')->store('public/img');
         }
+
         $event->save();
         return response()->json($event, 200);
     }

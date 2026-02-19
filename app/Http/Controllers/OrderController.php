@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
+use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
@@ -21,7 +22,23 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $order = new Order($request->all());
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|integer|exists:users,id',
+            'estado' => 'sometimes|in:pendiente,procesando,completado',
+            'fecha_pedido' => 'sometimes|date',
+            'direccion_envio' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
+        $order = new Order($request->only([
+            'user_id',
+            'estado',
+            'fecha_pedido',
+            'direccion_envio',
+        ]));
         $order->save();
         return response()->json($order, 200);
     }
