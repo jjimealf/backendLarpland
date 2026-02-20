@@ -17,6 +17,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/login', [LoginController::class, 'login']);
+Route::post('/register', [LoginController::class, 'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class);
@@ -27,3 +28,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('reviews', ProductReviewController::class);
     Route::apiResource('event/registrations', EventRegistrationController::class);
 });
+
