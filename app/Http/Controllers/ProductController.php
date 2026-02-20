@@ -27,6 +27,7 @@ class ProductController extends Controller
             'descripcion' => 'required|string',
             'precio' => 'required|numeric',
             'cantidad' => 'required|numeric',
+            'valoracion_total' => 'sometimes|numeric|min:0|max:5',
             'imagen' => 'required|image',
             'categoria' => 'required|string',
         ]);
@@ -61,6 +62,7 @@ class ProductController extends Controller
             'descripcion' => 'sometimes|string',
             'precio' => 'sometimes|numeric',
             'cantidad' => 'sometimes|numeric',
+            'valoracion_total' => 'sometimes|numeric|min:0|max:5',
             'imagen' => 'sometimes|image',
             'categoria' => 'sometimes|string',
         ]);

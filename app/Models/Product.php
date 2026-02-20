@@ -15,6 +15,7 @@ class Product extends Model
         'descripcion',
         'precio',
         'cantidad',
+        'valoracion_total',
         'imagen',
         'categoria',
     ];
