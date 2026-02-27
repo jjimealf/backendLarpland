@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -50,7 +51,7 @@ class User extends Authenticatable
     /**
      * Get the orders for the user.
      */
-    public function orders()
+    public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
     }
@@ -58,7 +59,7 @@ class User extends Authenticatable
     /**
      * Get the product reviews for the user.
      */
-    public function productReviews()
+    public function productReviews(): HasMany
     {
         return $this->hasMany(Product_Review::class);
     }
@@ -66,8 +67,13 @@ class User extends Authenticatable
     /**
      * Get the event registrations for the user.
      */
-    public function eventRegistrations()
+    public function eventRegistrations(): HasMany
     {
         return $this->hasMany(Event_registration::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return (int) $this->rol === 1;
     }
 }
